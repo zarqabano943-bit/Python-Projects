@@ -54,29 +54,5 @@ while True:
     else:
         print("invalid choice,Try Again.")
         
+         
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-            
-        
-    
