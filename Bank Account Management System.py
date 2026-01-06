@@ -1,6 +1,19 @@
 from datetime import datetime
 import random
 
+class Transaction:
+    def __init__(self, t_type, amount, balance_after, target_account=None):
+        self.id = random.randint(100000, 999999)
+        self.type = t_type
+        self.amount = amount
+        self.date = datetime.now()
+        self.target_account = target_account
+        self.balance_after = balance_after
+
+    def __str__(self):
+        if self.target_account:
+            return f"{self.date.strftime('%Y-%m-%d %H:%M:%S')} | {self.type} | Amount: {self.amount} | Target: {self.target_account} | Balance: {self.balance_after}"
+        return f"{self.date.strftime('%Y-%m-%d %H:%M:%S')} | {self.type} | Amount: {self.amount} | Balance: {self.balance_after}"
 
 class BankAccount:
     def __init__(self, holder_name, initial_deposit, account_type, account_number):
@@ -50,30 +63,10 @@ class BankAccount:
         target_account.transaction_history.append(Transaction("Transfer In", amount, target_account.get_balance(), self.get_account_number()))
         print(f"Transferred {amount} to Account {target_account.get_account_number()}. Your Balance: {self.__balance}")
 
-    def print_mini_statement(self):
-        print(f"\nMini Statement for Account {self.__account_number} ({self.account_holder_name})")
-        for t in self.transaction_history[-5:]:
-            print(t)
-
-    def print_full_statement(self):
-        print(f"\nFull Statement for Account {self.__account_number} ({self.account_holder_name})")
+    def print_statement(self):
+        print(f"\nStatement for Account {self.__account_number} ({self.account_holder_name})")
         for t in self.transaction_history:
             print(t)
-
-class Transaction:
-    def __init__(self, t_type, amount, balance_after, target_account=None):
-        self.id = random.randint(100000, 999999)
-        self.type = t_type
-        self.amount = amount
-        self.date = datetime.now()
-        self.target_account = target_account
-        self.balance_after = balance_after
-
-    def __str__(self):
-        if self.target_account:
-            return f"{self.date.strftime('%Y-%m-%d %H:%M:%S')} | {self.type} | Amount: {self.amount} | Target: {self.target_account} | Balance: {self.balance_after}"
-        return f"{self.date.strftime('%Y-%m-%d %H:%M:%S')} | {self.type} | Amount: {self.amount} | Balance: {self.balance_after}"
-
 
 class Bank:
     def __init__(self, name):
@@ -96,23 +89,6 @@ class Bank:
     def find_account(self, account_number):
         return self.accounts.get(account_number, None)
 
-    def delete_account(self, account_number):
-        if account_number in self.accounts:
-            del self.accounts[account_number]
-            print(f"Account {account_number} deleted successfully!")
-        else:
-            print("Account not found!")
-
-    def list_all_accounts(self):
-        print(f"\nAll Accounts in {self.bank_name}:")
-        for acc_num, acc in self.accounts.items():
-            print(f"{acc_num} | {acc.account_holder_name} | Balance: {acc.get_balance()} | Type: {acc.account_type}")
-
-    def get_total_bank_balance(self):
-        total = sum(acc.get_balance() for acc in self.accounts.values())
-        print(f"\nTotal Bank Balance: {total}")
-        return total
-
 def main():
     bank = Bank("Python Bank")
     while True:
@@ -122,10 +98,8 @@ def main():
         print("3. Withdraw Money")
         print("4. Transfer Funds")
         print("5. View Account Details")
-        print("6. View Mini Statement")
-        print("7. View Full Statement")
-        print("8. List All Accounts")
-        print("9. Exit")
+        print("6. View Statement")
+        print("7. Exit")
         choice = input("Enter choice: ")
 
         if choice == "1":
@@ -183,22 +157,11 @@ def main():
             acc_num = int(input("Enter account number: "))
             account = bank.find_account(acc_num)
             if account:
-                account.print_mini_statement()
+                account.print_statement()
             else:
                 print("Account not found!")
 
         elif choice == "7":
-            acc_num = int(input("Enter account number: "))
-            account = bank.find_account(acc_num)
-            if account:
-                account.print_full_statement()
-            else:
-                print("Account not found!")
-
-        elif choice == "8":
-            bank.list_all_accounts()
-
-        elif choice == "9":
             print("Thank you for banking with us!")
             break
 
